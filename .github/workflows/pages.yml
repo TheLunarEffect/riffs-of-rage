@@ -1,0 +1,61 @@
+name: Publish Riffs of Rage V6 to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "github-pages"
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release files
+        uses: actions/checkout@v4
+      - name: Check release file integrity and size
+        shell: bash
+        run: |
+          python3 - <<'PY_VERIFY'
+          import hashlib, json, pathlib, sys
+          root = pathlib.Path('.')
+          expected = json.loads((root / 'release-checksums.json').read_text())
+          for filename, digest in expected.items():
+              p = root / filename
+              if not p.is_file():
+                  sys.exit(f'Missing required release file: {filename}')
+              actual = hashlib.sha256(p.read_bytes()).hexdigest()
+              if actual != digest:
+                  sys.exit(f'Checksum mismatch: {filename}')
+          print(f'Verified {len(expected)} original game files.')
+          PY_VERIFY
+      - name: Create clean public site directory
+        shell: bash
+        run: |
+          mkdir -p _site
+          python3 - <<'PY_SITE'
+          import json, pathlib, shutil
+          for filename in json.loads(pathlib.Path('release-checksums.json').read_text()):
+              shutil.copy2(filename, pathlib.Path('_site') / filename)
+          pathlib.Path('_site/.nojekyll').touch()
+          print('Public site staged without workflow, guide or checksums.')
+          PY_SITE
+      - name: Configure Pages
+        uses: actions/configure-pages@v5
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
