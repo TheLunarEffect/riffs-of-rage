@@ -1,0 +1,32 @@
+RIFFS OF RAGE V6 - GITHUB PAGES DEPLOYMENT
+
+WHAT THIS IS
+The game files are unchanged from the V6 Web build, except the Netlify-only _headers file was removed. A .nojekyll marker, an automatic deployment workflow, a checksum file, and these instructions were added. This is NOT a Godot rebuild.
+
+IMPORTANT
+GitHub's web uploader has a 25 MiB per-file limit, so DO NOT upload the extracted files using the GitHub website. Two Godot files exceed that limit. Do NOT use Git LFS. Do NOT upload the Source ZIP to the public game repository.
+
+ONE-TIME SETUP ON YOUR MAC
+1. Download and extract Riffs_of_Rage_V6_GitHub_Pages_Ready.zip. Keep the entire extracted folder intact, including its hidden .github directory and .nojekyll file.
+2. Install/open the free GitHub Desktop application from https://desktop.github.com/ and sign into your GitHub account.
+3. In GitHub Desktop, use File > Add Local Repository and select the extracted folder. If it isn't a repository yet, choose the option to create a repository here. Set the repository name, e.g. riffs-of-rage. Commit the initial files to the main branch.
+4. Choose Publish repository. Public repositories are the straightforward GitHub Free Pages route. Make the repository PUBLIC. Note: the game files will be publicly downloadable by anyone; GitHub Pages is not a private test host.
+5. In your repository on github.com, open Settings > Pages > Build and deployment > Source: GitHub Actions.
+6. Open the Actions tab. The workflow named 'Publish Riffs of Rage V6 to GitHub Pages' should run after publishing the main branch. If it does not, use Actions > select workflow > Run workflow. If GitHub prompts you to enable Actions, enable them.
+7. Wait for the workflow to succeed. The site URL is shown in Settings > Pages or in the deployment job. For a normal project repository, the URL has the form https://YOUR-USERNAME.github.io/REPOSITORY-NAME/ .
+8. Test the live URL on a Mac and on iPhone Safari (landscape), including audio, touch controls, reload and at least Level 1 before moving any public links away from Netlify.
+
+FUTURE UPDATES
+Keep a backup of this folder. Use GitHub Desktop to commit changed files and Push origin to deploy a new version. Do not replace with a new ZIP unless its release files are revalidated and release-checksums.json is regenerated for that version.
+
+COMPATIBILITY CAUTIONS
+- GitHub Pages is public hosting. Publishing the repository exposes the game package and any other files you put inside it.
+- It has a published 100 GB/month soft bandwidth limit and a 1 GB recommended repository/site limit; limits and policies may change.
+- GitHub Pages has no built-in game-play analytics. Do not mistake repository traffic for number of players.
+- A Pages deployment has NOT been run or physically tested here. Netlify remains the known working backup.
+- No promised native iPhone fullscreen; Safari UI may still appear depending on how the game is opened.
+- The current V6 export uses relative file paths and no required cross-origin isolation, suitable for a project Pages subpath.
+- If your repo defaults to a branch other than main, rename it main before publishing or update the workflow trigger accordingly.
+
+CHECKS
+Every original game file is SHA-256 checked by the Pages workflow before deployment. If a checksum mismatch is reported, investigate instead of bypassing the check.
